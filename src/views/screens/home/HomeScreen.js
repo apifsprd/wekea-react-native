@@ -6,6 +6,8 @@ import {
   useWindowDimensions,
   Image,
   ScrollView,
+  FlatList,
+  Pressable,
 } from "react-native";
 import React from "react";
 import { Button, Card, IconButton } from "react-native-paper";
@@ -13,6 +15,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Carousel from "react-native-reanimated-carousel";
 
 import Sofa from "../../../../assets/sofa.jpg";
+import Ads from "../../../../assets/2150040375.jpg";
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -53,8 +56,21 @@ const styles = StyleSheet.create({
     width: 100,
     height: 50,
   },
-  cardContainer: { width: 150, overflow: "hidden", marginRight: 15 },
+  cardContainer: {
+    width: 150,
+    overflow: "hidden",
+    marginRight: 15,
+  },
   cardCoverImg: { borderRadius: 0, height: 150 },
+  pressableComponent: { flex: 1, height: 100, margin: 5 },
+  imagePressable: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+    borderRadius: 10,
+    borderWidth: 0.4,
+    borderColor: "gray",
+  },
 });
 
 const Index = ({ navigation }) => {
@@ -73,66 +89,86 @@ const Index = ({ navigation }) => {
   ];
 
   return (
-    <View style={styles.mainContainer}>
-      {/* Search Bar */}
-      <View style={styles.searchBarContainer}>
-        <View style={[styles.searchBar, styles.borderShadow]}>
-          <Ionicons name="search" size={16} />
-          <TextInput placeholder="Mau cari apa?" />
+    <ScrollView>
+      <View style={styles.mainContainer}>
+        {/* Search Bar */}
+        <View style={styles.searchBarContainer}>
+          <View style={[styles.searchBar, styles.borderShadow]}>
+            <Ionicons name="search" size={16} />
+            <TextInput placeholder="Mau cari apa?" />
+          </View>
+          <IconButton icon="menu" />
         </View>
-        <IconButton icon="menu" />
-      </View>
-
-      {/* Carousel */}
-      <View style={{ height: 200, alignItems: "center" }}>
-        <Carousel
-          loop={false}
-          width={width - 15}
-          height={200}
-          autoPlay={false}
-          data={dataCorousel}
-          scrollAnimationDuration={1000}
-          onSnapToItem={(index) => {}}
-          renderItem={({ item }) => (
-            <Image source={{ uri: item.imgUrl }} style={styles.imageCarousel} />
+        {/* Carousel */}
+        <View style={{ height: 200, alignItems: "center" }}>
+          <Carousel
+            loop={false}
+            width={width - 15}
+            height={200}
+            autoPlay={false}
+            data={dataCorousel}
+            scrollAnimationDuration={1000}
+            onSnapToItem={(index) => {}}
+            renderItem={({ item }) => (
+              <Image
+                source={{ uri: item.imgUrl }}
+                style={styles.imageCarousel}
+              />
+            )}
+          />
+        </View>
+        {/* Category */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {Array.from(Array(5).keys()).map((item) => (
+            <IconButton
+              key={item}
+              icon={({ color, size }) => (
+                <View
+                  style={{ alignItems: "center", justifyContent: "center" }}
+                >
+                  <Ionicons name="home-outline" size={size} color={color} />
+                  <Text>Home</Text>
+                </View>
+              )}
+              style={styles.iconButton}
+            />
+          ))}
+        </ScrollView>
+        {/* Promotion Component */}
+        <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+          Promo Minggu Ini
+        </Text>
+        <FlatList
+          style={{ marginTop: 5 }}
+          numColumns={2}
+          data={Array(4)}
+          renderItem={({}) => (
+            <Pressable style={styles.pressableComponent}>
+              <Image source={Ads} style={styles.imagePressable} />
+            </Pressable>
           )}
         />
+        {/* Product */}
+        <Text style={{ fontWeight: "bold", fontSize: 18 }}>Popular</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ paddingVertical: 10 }}
+        >
+          {Array.from(Array(5).keys()).map((item, index) => (
+            <Card style={styles.cardContainer} key={index}>
+              <Card.Cover source={Sofa} style={styles.cardCoverImg} />
+              <Card.Content style={{ padding: 15 }}>
+                <Text style={{ fontWeight: "bold", fontSize: 16 }}>Sofa</Text>
+                <Text>Rp. 100.000</Text>
+              </Card.Content>
+            </Card>
+          ))}
+        </ScrollView>
       </View>
 
-      {/* Category */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {Array.from(Array(5).keys()).map((item) => (
-          <IconButton
-            key={item}
-            icon={({ color, size }) => (
-              <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <Ionicons name="home-outline" size={size} color={color} />
-                <Text>Home</Text>
-              </View>
-            )}
-            style={styles.iconButton}
-          />
-        ))}
-      </ScrollView>
-
-      {/* Product */}
-      <Text style={{ fontWeight: "bold", fontSize: 18 }}>Popular</Text>
-      <ScrollView
-        showsHorizontalScrollIndicator={false}
-        horizontal
-        style={{ paddingVertical: 10 }}
-      >
-        {Array.from(Array(5)).map((item) => (
-          <Card style={styles.cardContainer}>
-            <Card.Cover source={Sofa} style={styles.cardCoverImg} />
-            <Card.Content style={{ padding: 10 }}>
-              <Text style={{ fontWeight: "bold", fontSize: 16 }}>Sofa</Text>
-              <Text>Rp. 100.000</Text>
-            </Card.Content>
-          </Card>
-        ))}
-      </ScrollView>
-    </View>
+      <View style={{ marginTop: "20%" }}></View>
+    </ScrollView>
   );
 };
 
